@@ -20,7 +20,7 @@ public class ProductoService {
     private final ProductoDAO productoDAO = new ProductoDAOImpl();
 
     public List<ProductoEntity> readFile(String fileXml) throws JAXBException {
-        //TODO: Implementar
+
         File file = new File(fileXml);
         Productos productos = productoDAO.readFile(file);
         List<ProductoEntity> lista = new ArrayList<>();
@@ -47,12 +47,11 @@ public class ProductoService {
 
             lista.add(productoEntity);
         }
-        
+
         return lista;
     }
 
     public void exportSummary(String path, String fileXml) throws JAXBException, IOException {
-        //TODO: Implementar
 
         File file = new File(fileXml);
 
@@ -91,7 +90,6 @@ public class ProductoService {
     }
 
     public void exportExcel(String path, String fileXml) throws JAXBException, IOException, ParseException {
-        //TODO: Implementar
         List<ProductoEntity> productos = readFile(fileXml);
 
         Workbook workbook = new XSSFWorkbook();
