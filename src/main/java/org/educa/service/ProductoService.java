@@ -19,6 +19,14 @@ import java.util.List;
 public class ProductoService {
     private final ProductoDAO productoDAO = new ProductoDAOImpl();
 
+    /**
+     * Lee los productos del archivo XML y calcula sus datos.*
+     *
+     * @param fileXml ruta del archivo XML que se va a leer
+     * @return lista de productos con sus cálculos realizados
+     * @throws JAXBException si ocurre un error al leer el XML
+     */
+
     public List<ProductoEntity> readFile(String fileXml) throws JAXBException {
 
         File file = new File(fileXml);
@@ -51,6 +59,12 @@ public class ProductoService {
         return lista;
     }
 
+    /**
+     * Genera un archivo de texto con el resumen de los productos.*
+     *
+     * @throws JAXBException si ocurre un error al leer el XML
+     * @throws IOException   si ocurre un error al escribir el archivo
+     */
     public void exportSummary(String path, String fileXml) throws JAXBException, IOException {
 
         File file = new File(fileXml);
@@ -89,6 +103,14 @@ public class ProductoService {
         }
     }
 
+    /**
+     * Genera un archivo Excel con los datos de los productos.*
+     *
+     * @param fileXml ruta del archivo XML que contiene los productos
+     * @throws JAXBException  si ocurre un error al leer el XML
+     * @throws IOException    si ocurre un error al crear o escribir el Excel
+     * @throws ParseException si ocurre un error al interpretar el nombre del archivo
+     */
     public void exportExcel(String path, String fileXml) throws JAXBException, IOException, ParseException {
         List<ProductoEntity> productos = readFile(fileXml);
 
