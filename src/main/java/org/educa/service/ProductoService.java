@@ -3,19 +3,14 @@ package org.educa.service;
 import generated.Producto;
 import generated.Productos;
 import jakarta.xml.bind.JAXBException;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.educa.dao.ProductoDAO;
 import org.educa.dao.ProductoDAOImpl;
 import org.educa.entity.ProductoEntity;
 import org.educa.entity.SummaryEntity;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -129,5 +124,69 @@ public class ProductoService {
 
             fila++;
         }
+        CellStyle estiloCabecera = workbook.createCellStyle();
+        Font font = workbook.createFont();
+        font.setBold(true);
+
+        estiloCabecera.setFont(font);
+        estiloCabecera.setAlignment(HorizontalAlignment.CENTER);
+        estiloCabecera.setBorderTop(BorderStyle.THIN);
+        estiloCabecera.setBorderBottom(BorderStyle.THIN);
+        estiloCabecera.setBorderLeft(BorderStyle.THIN);
+        estiloCabecera.setBorderRight(BorderStyle.THIN);
+
+        for (Cell cell : cabecera) {
+            cell.setCellStyle(estiloCabecera);
+        }
+
+        CellStyle estiloFila1 = workbook.createCellStyle();
+        estiloFila1.setAlignment(HorizontalAlignment.CENTER);
+        estiloFila1.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        estiloFila1.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        estiloFila1.setBorderTop(BorderStyle.THIN);
+        estiloFila1.setBorderBottom(BorderStyle.THIN);
+        estiloFila1.setBorderLeft(BorderStyle.THIN);
+        estiloFila1.setBorderRight(BorderStyle.THIN);
+
+        CellStyle estiloFila2 = workbook.createCellStyle();
+        estiloFila2.setAlignment(HorizontalAlignment.CENTER);
+        estiloFila2.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+        estiloFila2.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        estiloFila2.setBorderTop(BorderStyle.THIN);
+        estiloFila2.setBorderBottom(BorderStyle.THIN);
+        estiloFila2.setBorderLeft(BorderStyle.THIN);
+        estiloFila2.setBorderRight(BorderStyle.THIN);
+
+        int numeroFila = 1;
+
+        for (Row row : sheet) {
+            if (numeroFila > 0) {
+                CellStyle estilo;
+
+                if (numeroFila % 2 == 0) {
+                    estilo = estiloFila1;
+                } else {
+                    estilo = estiloFila2;
+                }
+
+                for (Cell cell : row) {
+                    cell.setCellStyle(estilo);
+                }
+            }
+
+            numeroFila++;
+        }
+
+        for (int i = 0; i < 8; i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+        File ficheroExcel = new File(path + "export_junio2026.xlsx");
+
+        try (FileOutputStream archivo = new FileOutputStream(ficheroExcel)) {
+            workbook.write(archivo);
+        }
+
+        workbook.close();
     }
 }
