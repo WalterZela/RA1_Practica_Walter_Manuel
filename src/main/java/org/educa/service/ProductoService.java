@@ -6,8 +6,11 @@ import jakarta.xml.bind.JAXBException;
 import org.educa.dao.ProductoDAO;
 import org.educa.dao.ProductoDAOImpl;
 import org.educa.entity.ProductoEntity;
+import org.educa.entity.SummaryEntity;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -52,6 +55,40 @@ public class ProductoService {
     public void exportSummary(String path, String fileXml) throws JAXBException, IOException {
         //TODO: Implementar
 
+        File file = new File(fileXml);
+
+        List<ProductoEntity> productos = readFile(fileXml);
+
+        BigDecimal totalProfit = BigDecimal.ZERO;
+
+        for (ProductoEntity producto : productos) {
+            totalProfit = totalProfit.add(producto.getProfit());
+        }
+
+        String nombreFichero = file.getName().replace(".xml", "");
+        String nombre = nombreFichero.replace("inventario_", "");
+
+        SummaryEntity summary = new SummaryEntity(
+                nombre,
+                productos.size(),
+                totalProfit,
+                file.getAbsolutePath(),
+                file.getName(),
+                file.length()
+        );
+        File directorio = new File(path);
+
+        if (!directorio.exists()) {
+            directorio.mkdirs();
+        }
+
+        File ficheroResumen = new File(path + "result_" + nombre + ".txt");
+
+        try (FileWriter fileWriter = new FileWriter(ficheroResumen);
+             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
+
+            bufferedWriter.write(summary.toPrint());
+        }
     }
 
     public void exportExcel(String path, String fileXml) throws JAXBException, IOException, ParseException {
